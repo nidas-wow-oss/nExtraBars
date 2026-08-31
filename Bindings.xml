@@ -1,0 +1,29 @@
+<Bindings>
+	<!-- Left Bar Bindings -->
+	<Binding name="CLICK NEB_BarLeftButton1:LeftButton" header="NEB_BarLeft" />
+	<Binding name="CLICK NEB_BarLeftButton2:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton3:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton4:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton5:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton6:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton7:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton8:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton9:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton10:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton11:LeftButton" />
+	<Binding name="CLICK NEB_BarLeftButton12:LeftButton" />
+
+	<!-- Right Bar Bindings -->
+	<Binding name="CLICK NEB_BarRightButton1:LeftButton" header="NEB_BarRight" />
+	<Binding name="CLICK NEB_BarRightButton2:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton3:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton4:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton5:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton6:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton7:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton8:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton9:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton10:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton11:LeftButton" />
+	<Binding name="CLICK NEB_BarRightButton12:LeftButton" />
+</Bindings>

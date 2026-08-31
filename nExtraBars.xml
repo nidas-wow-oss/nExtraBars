@@ -1,0 +1,123 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<!-- Button template that references our save tables -->
+	<CheckButton name="NEB_ExtraButtonTemplate" inherits="NEB_ButtonTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="saveentries" value="NEB_ButtonEntries"/>
+			<Attribute name="savesettings" value="NEB_ButtonSettings"/>
+		</Attributes>
+	</CheckButton>
+
+	<!-- Bar template: 12 horizontal buttons -->
+	<Frame name="NEB_BarTemplate" inherits="SecureHandlerBaseTemplate, SecureHandlerShowHideTemplate" toplevel="true" frameStrata="LOW" virtual="true" hidden="true">
+		<Size>
+			<AbsDimension x="530" y="42"/>
+		</Size>
+		<Frames>
+			<CheckButton name="$parentButton1" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset><AbsDimension x="4" y="-4"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton2" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton1" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton3" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton2" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton4" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton3" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton5" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton4" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton6" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton5" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton7" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton6" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton8" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton7" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton9" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton8" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton10" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton9" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton11" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton10" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="$parentButton12" inherits="NEB_ExtraButtonTemplate" id="0">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton11" relativePoint="RIGHT">
+						<Offset><AbsDimension x="6" y="0"/></Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+		</Frames>
+	</Frame>
+
+	<!-- LEFT BAR: positioned by Lua relative to ActionButton1 -->
+	<Frame name="NEB_BarLeft" inherits="NEB_BarTemplate" parent="UIParent">
+		<Anchors>
+			<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+				<Offset><AbsDimension x="0" y="0"/></Offset>
+			</Anchor>
+		</Anchors>
+	</Frame>
+
+	<!-- RIGHT BAR: positioned by Lua relative to ActionButton1 -->
+	<Frame name="NEB_BarRight" inherits="NEB_BarTemplate" parent="UIParent">
+		<Anchors>
+			<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+				<Offset><AbsDimension x="0" y="0"/></Offset>
+			</Anchor>
+		</Anchors>
+	</Frame>
+
+</Ui>

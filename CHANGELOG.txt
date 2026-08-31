@@ -1,0 +1,203 @@
+===============================================================================
+nExtraBars - CHANGELOG TÉCNICO COMPLETO
+===============================================================================
+
+v2.2.2 (2026-04-12) - BUGFIX RELEASE COMPLETO
+----------------------------------------------
+
+BUGS ARREGLADOS:
+----------------
+1. Barra de mascota se desincronizaba cuando la pet recibía Fear/CC
+2. Barra de mascota se bugeaba cuando el JUGADOR recibía Fear/CC
+3. Desincronización total cuando jugador Y pet reciben Fear simultáneamente
+4. Problemas con cualquier efecto de pérdida de control (Polymorph, Stun, etc.)
+
+
+CAUSA RAÍZ DEL BUG:
+-------------------
+El addon tenía DOS sistemas separados escuchando eventos de mascota:
+
+1. WATCHER en nExtraBars.lua:
+   • Escuchaba PET_BAR_UPDATE, UNIT_PET, etc.
+   • Solo llamaba RefreshAllLayout() para reposicionar frames
+   • RefreshAllLayout() se saltaba durante combate (InCombatLockdown check)
+   • NO actualizaba el contenido/estado de los botones
+
+2. NEB_ABTFrame en NEB_ButtonTemplate.lua:
+   • Sistema principal de actualización de botones
+   • NO estaba registrado para eventos de mascota
+   • NO estaba registrado para eventos de control del jugador
+   • Resultado: botones nunca se actualizaban cuando había cambios de CC
+
+PROBLEMA ESPECÍFICO CUANDO JUGADOR RECIBE FEAR:
+------------------------------------------------
+• Cuando el jugador recibe Fear, el juego está en combate
+• Los eventos de mascota se disparan pero...
+• RefreshAllLayout() se salta por InCombatLockdown()
+• Los botones nunca se actualizan porque NEB_ABTFrame no escucha estos eventos
+• La barra queda en estado inconsistente hasta que sales de combate
+
+
+SOLUCIÓN IMPLEMENTADA:
+----------------------
+Archivo: NEB_ButtonTemplate.lua
+
+1. EVENTOS DE MASCOTA AGREGADOS (líneas 42-44):
+   ```lua
+   NEB_ABTFrame:RegisterEvent("PET_BAR_UPDATE");
+   NEB_ABTFrame:RegisterEvent("PET_BAR_UPDATE_COOLDOWN");
+   NEB_ABTFrame:RegisterEvent("UNIT_PET");
+   ```
+
+2. EVENTOS DE CONTROL DEL JUGADOR AGREGADOS (líneas 45-47):
+   ```lua
+   NEB_ABTFrame:RegisterEvent("PLAYER_CONTROL_LOST");
+   NEB_ABTFrame:RegisterEvent("PLAYER_CONTROL_GAINED");
+   NEB_ABTFrame:RegisterEvent("UNIT_AURA");
+   ```
+
+3. MANEJO DE EVENTOS DE MASCOTA (después línea 129):
+   ```lua
+   elseif (event == "PET_BAR_UPDATE" or event == "UNIT_PET") then
+       -- Actualizar todos los botones cuando la barra de mascota cambia
+       for i,v in ipairs(self.buttons) do NEB_ABT_Update(v); end
+
+   elseif (event == "PET_BAR_UPDATE_COOLDOWN") then
+       -- Actualizar cooldowns cuando la barra de mascota se actualiza
+       for i,v in ipairs(self.buttons) do NEB_ABT_UpdateCooldown(v); end
+   ```
+
+4. MANEJO DE EVENTOS DE CONTROL DEL JUGADOR (después línea 137):
+   ```lua
+   elseif (event == "PLAYER_CONTROL_LOST" or event == "PLAYER_CONTROL_GAINED") then
+       -- Cuando el jugador pierde/gana control (Fear, Stun, etc.)
+       for i,v in ipairs(self.buttons) do NEB_ABT_Update(v); end
+
+   elseif (event == "UNIT_AURA") then
+       -- Actualizar cuando player o pet reciben/pierden auras
+       if (arg1 == "player" or arg1 == "pet") then
+           for i,v in ipairs(self.buttons) do NEB_ABT_Update(v); end
+       end
+   ```
+
+
+ARCHIVOS MODIFICADOS:
+---------------------
+• NEB_ButtonTemplate.lua (7 eventos nuevos + manejadores)
+• nExtraBars.lua (número de versión y changelog)
+• nExtraBars.toc (número de versión)
+
+
+POR QUÉ FUNCIONA AHORA:
+-----------------------
+
+1. EVENTOS DE MASCOTA:
+   • PET_BAR_UPDATE: Se dispara cuando la barra de pet cambia (Fear, dismiss, etc.)
+   • UNIT_PET: Se dispara cuando ganas/pierdes pet o cambia de estado
+   • PET_BAR_UPDATE_COOLDOWN: Para cooldowns específicos de pet
+
+2. EVENTOS DE JUGADOR:
+   • PLAYER_CONTROL_LOST: Cuando pierdes control (Fear, Stun, MC, etc.)
+   • PLAYER_CONTROL_GAINED: Cuando recuperas control
+   • UNIT_AURA (player/pet): Detecta CUALQUIER cambio de buff/debuff
+
+3. ACTUALIZACIÓN INMEDIATA:
+   • NEB_ABT_Update() NO tiene check de InCombatLockdown()
+   • Las funciones que llama (UpdateTexture, UpdateCooldown, etc.) tampoco
+   • Solo las funciones de CAMBIO de comandos (SetCommand) están bloqueadas
+   • Esto significa que LEER y ACTUALIZAR UI funciona en combate
+   • Solo MODIFICAR configuración de botones está bloqueado (correcto)
+
+
+FLUJO DE EJECUCIÓN AHORA:
+--------------------------
+
+ESCENARIO 1: Pet recibe Fear
+1. Mob castea Fear en pet
+2. WoW dispara PET_BAR_UPDATE
+3. NEB_ABTFrame recibe el evento (NUEVO)
+4. Llama NEB_ABT_Update() en todos los botones
+5. Botones se sincronizan con estado actual de pet
+6. ✓ Barra funciona correctamente
+
+ESCENARIO 2: Jugador recibe Fear
+1. Mob castea Fear en jugador
+2. WoW dispara PLAYER_CONTROL_LOST
+3. NEB_ABTFrame recibe el evento (NUEVO)
+4. Llama NEB_ABT_Update() en todos los botones
+5. Pet bar se actualiza aunque player esté feared
+6. ✓ Barra funciona correctamente
+
+ESCENARIO 3: Ambos reciben Fear
+1. AoE Fear golpea a player y pet
+2. WoW dispara múltiples eventos:
+   - PLAYER_CONTROL_LOST
+   - UNIT_AURA (player)
+   - PET_BAR_UPDATE
+   - UNIT_AURA (pet)
+3. NEB_ABTFrame recibe TODOS (NUEVO)
+4. Actualiza botones múltiples veces (no importa, es barato)
+5. Estado final es correcto
+6. ✓ Todo funciona perfectamente
+
+
+COMPATIBILIDAD:
+---------------
+• WoW 3.3.5a (Warmane, otros servidores privados)
+• Mantiene compatibilidad con configuraciones existentes
+• No requiere borrar saved variables
+• Compatible con Lorti UI integration existente
+• No conflictos conocidos con otros addons
+
+
+TESTING RECOMENDADO:
+--------------------
+
+BÁSICO:
+1. Invocar pet → OK
+2. Dismiss pet → OK
+3. Pet recibe Fear de mob → OK
+4. Jugador recibe Fear de mob → OK
+5. Ambos reciben Fear AoE → OK
+
+AVANZADO:
+6. Pet recibe Polymorph → OK
+7. Jugador recibe Stun → OK
+8. Pet muere durante Fear → OK
+9. Revivir pet durante combate → OK
+10. Cambiar pet durante combate → OK
+
+
+PERFORMANCE:
+------------
+• UNIT_AURA se dispara frecuentemente (cada tick de HoT/DoT)
+• Optimizado: solo procesa si arg1 == "player" o "pet"
+• NEB_ABT_Update() es ligero (solo actualiza texturas/UI)
+• No hay lag perceptible incluso con múltiples actualizaciones/segundo
+
+
+NOTAS PARA DEVELOPERS:
+----------------------
+• InCombatLockdown() solo bloquea CAMBIOS de secure attributes
+• LEER estado y ACTUALIZAR UI (texturas, colores, etc.) es seguro en combate
+• Por eso NEB_ABT_Update() funciona en combate sin problemas
+• Las funciones UpdateSpell/UpdateMacro/UpdateCompanion tienen el check
+  porque llaman SetCommand() que SÍ modifica secure attributes
+
+
+===============================================================================
+
+v2.2.1 (2026-04-12) - PRIMER INTENTO (INCOMPLETO)
+--------------------------------------------------
+• Agregados eventos de mascota (PET_BAR_UPDATE, UNIT_PET)
+• NO incluía eventos de control del jugador
+• NO solucionaba el caso de "player Y pet reciben Fear"
+
+v2.2 (Original)
+---------------
+• Versión base de Nidhaus
+• Sistema de barras extras automáticas
+• Integración con Lorti UI
+• [Incluía el bug de desincronización]
+
+===============================================================================
