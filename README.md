@@ -14,6 +14,25 @@ An addon for **World of Warcraft 3.3.5a (WotLK)** that adds **two extra action b
 - Its own keybindings through `Bindings.xml`, configurable from the standard in-game menu.
 - **Per-character** settings (`SavedVariablesPerCharacter: NEB_DB`), so every alt keeps its own layout.
 
+## Screenshots
+
+The two extra bars in place, above the default action bars:
+
+![The extra bars in use](images/bars-in-use.png)
+
+The options panel (`/neb`) — enable each bar independently and lock its buttons:
+
+![Options panel](images/options-panel.png)
+
+Each button gets its own binding, listed under *nExtraBars Left* and *nExtraBars Right* in the standard key bindings menu:
+
+![Key bindings](images/keybindings.png)
+
+Empty slots are hidden by default. To see them while you set the bars up, turn on
+*Interface > Action Bars > Always Show Action Bars*:
+
+![Bars with empty slots visible](images/bars-empty-slots.png)
+
 ## Installation
 
 1. Close the game.
@@ -28,6 +47,9 @@ Coming from an older version? Your saved settings are preserved.
 |---|---|
 | `/neb` | Open the options panel |
 | `/nextrabars` | Long alias |
+| `/neb left on` · `/neb left off` | Turn the left bar on or off |
+| `/neb right on` · `/neb right off` | Turn the right bar on or off |
+| `/neb reset` | Reload the interface |
 
 ## What's new in 2.2.2
 
