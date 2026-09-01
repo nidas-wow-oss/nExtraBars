@@ -1,48 +1,50 @@
+*[Leer en español](README.es.md)*
+
 # nExtraBars
 
-Addon para **World of Warcraft 3.3.5a (WotLK)** que agrega **dos barras de acción extra** (izquierda y derecha), movibles y configurables, con soporte de offset para la barra de clase.
+An addon for **World of Warcraft 3.3.5a (WotLK)** that adds **two extra action bars** (left and right), movable and configurable, with class bar offset support.
 
-**Versión:** 2.2.2 · **Autor:** Nidhaus
+**Version:** 2.2.2 · **Author:** Nidhaus
 
-## Qué hace
+## What it does
 
-- Dos barras de acción adicionales, **Left** y **Right**, independientes de las de Blizzard.
-- **Movibles**: arrastrás cada barra a donde quieras y la posición se guarda.
-- Soporte de **offset para la barra de clase** (stance/shapeshift), para que no se pisen.
-- Keybindings propios a través de `Bindings.xml`, configurables desde el menú estándar del juego.
-- Configuración **por personaje** (`SavedVariablesPerCharacter: NEB_DB`), así cada alt tiene su propio layout.
+- Two additional action bars, **Left** and **Right**, independent of Blizzard's own.
+- **Movable**: drag each bar wherever you want and the position is saved.
+- **Class bar offset support** (stance/shapeshift), so they never overlap.
+- Its own keybindings through `Bindings.xml`, configurable from the standard in-game menu.
+- **Per-character** settings (`SavedVariablesPerCharacter: NEB_DB`), so every alt keeps its own layout.
 
-## Instalación
+## Installation
 
-1. Cerrá el juego.
-2. Copiá la carpeta `nExtraBars` dentro de `World of Warcraft\Interface\AddOns\`.
-3. Iniciá el juego y activá el addon en el selector de la pantalla de personajes.
+1. Close the game.
+2. Copy the `nExtraBars` folder into `World of Warcraft\Interface\AddOns\`.
+3. Start the game and enable the addon on the character selection screen.
 
-Si venías de una versión anterior, tus ajustes guardados se mantienen.
+Coming from an older version? Your saved settings are preserved.
 
-## Comandos
+## Commands
 
-| Comando | Qué hace |
+| Command | Action |
 |---|---|
-| `/neb` | Abre el panel de opciones |
-| `/nextrabars` | Alias largo |
+| `/neb` | Open the options panel |
+| `/nextrabars` | Long alias |
 
-## Novedades de la 2.2.2
+## What's new in 2.2.2
 
-Release de corrección centrada en la **barra de mascota y los efectos de control**:
+A bugfix release focused on the **pet bar and crowd control**:
 
-- Arreglada la desincronización de la pet bar cuando la mascota recibe Fear, Polymorph, Hibernate o cualquier CC.
-- Arreglado el bug que aparecía cuando el **jugador** perdía el control (Fear, Stun) y bugeaba la barra de la mascota.
-- Arreglado el caso en que **jugador y mascota** reciben CC simultáneamente.
+- Fixed the pet bar desyncing when the pet is hit by Fear, Polymorph, Hibernate or any other CC.
+- Fixed the bug that appeared when the **player** lost control (Fear, Stun) and broke the pet bar.
+- Fixed the case where **both player and pet** are crowd controlled at the same time.
 
-Técnicamente, se sumaron los eventos `PET_BAR_UPDATE`, `PET_BAR_UPDATE_COOLDOWN`, `UNIT_PET`, `PLAYER_CONTROL_LOST`, `PLAYER_CONTROL_GAINED` y `UNIT_AURA` al sistema de botones, de forma que la actualización se dispara incluso en combate para todo lo que no requiere cambios protegidos.
+Technically, the button system now listens to `PET_BAR_UPDATE`, `PET_BAR_UPDATE_COOLDOWN`, `UNIT_PET`, `PLAYER_CONTROL_LOST`, `PLAYER_CONTROL_GAINED` and `UNIT_AURA`, so updates fire even in combat for everything that does not require protected changes.
 
-El historial completo está en [`CHANGELOG.txt`](CHANGELOG.txt).
+Full history in [`CHANGELOG.txt`](CHANGELOG.txt).
 
-## Compatibilidad
+## Compatibility
 
-Interface 30300 — WotLK 3.3.5a. Probado en Warmane.
+Interface 30300 — WotLK 3.3.5a. Tested on Warmane.
 
-## Licencia
+## License
 
-Uso libre. Si lo redistribuís o lo usás como base, mantené el crédito al autor.
+Free to use. If you redistribute it or build on it, keep the credit to the author.
