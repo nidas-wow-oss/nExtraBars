@@ -2,6 +2,18 @@
 nExtraBars - CHANGELOG TÉCNICO COMPLETO
 ===============================================================================
 
+v2.2.3 (2026-09-29)
+-------------------
+
+NUEVO:
+------
+1. NEB_ApplyConfig(): función global para re-aplicar NEB_Config sin /reload.
+   La usa "Character Setup" de Nidhaus UnitFrames: ahora Copy / Export /
+   Import / Clear Bars / Undo incluyen las dos barras extra (botones de los
+   dos talentos, macros, qué barras están prendidas, cantidad de botones y
+   bloqueo). Los bindeos CLICK NEB_Bar... ya viajaban con el resto.
+
+
 v2.2.2 (2026-04-12) - BUGFIX RELEASE COMPLETO
 ----------------------------------------------
 

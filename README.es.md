@@ -4,7 +4,7 @@
 
 Addon para **World of Warcraft 3.3.5a (WotLK)** que agrega **dos barras de acción extra** (izquierda y derecha), movibles y configurables, con soporte de offset para la barra de clase.
 
-**Versión:** 2.2.2 · **Autor:** Nidhaus
+**Versión:** 2.2.3 · **Autor:** Nidhaus
 
 ## Qué hace
 
@@ -50,6 +50,11 @@ Si venías de una versión anterior, tus ajustes guardados se mantienen.
 | `/neb left on` · `/neb left off` | Prende o apaga la barra izquierda |
 | `/neb right on` · `/neb right off` | Prende o apaga la barra derecha |
 | `/neb reset` | Recarga la interfaz |
+
+## Novedades de la 2.2.3
+
+- El **Character Setup** de Nidhaus UnitFrames ahora copia también las barras extra: los botones de los dos talentos, sus macros, qué barras están prendidas, cuántos botones y el bloqueo. Los bindeos ya viajaban con el resto.
+- Nueva `NEB_ApplyConfig()`, para que esa configuración se aplique al instante en vez de después del `/reload`.
 
 ## Novedades de la 2.2.2
 

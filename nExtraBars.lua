@@ -237,6 +237,20 @@ function NEB:RefreshAllLayout()
 end
 
 -- ─────────────────────────────────────────────
+-- API pública: re-aplicar NEB_Config sin /reload.
+-- La usa "Character Setup" de Nidhaus UnitFrames cuando copia un personaje
+-- (qué barras están prendidas, cuántos botones, bloqueo). NEB es local, por
+-- eso hace falta esta puerta global.
+-- ─────────────────────────────────────────────
+function NEB_ApplyConfig()
+    if InCombatLockdown() then return false end
+    NEB:RefreshBar("Left")
+    NEB:RefreshBar("Right")
+    NEB:RefreshAllLayout()
+    return true
+end
+
+-- ─────────────────────────────────────────────
 -- Bar initialization
 -- ─────────────────────────────────────────────
 function NEB:InitBars()

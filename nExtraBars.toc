@@ -2,7 +2,7 @@
 ## Title: |cffffffffn|r|cffffffffE|r|cffffffffx|r|cfffffffft|r|cffffffffr|r|cffffffffa|r|cff00ff00B|r|cff00ff00a|r|cff00ff00r|r|cff00ff00s|r
 ## Notes: Adds two extra moveable action bars (Left & Right) with class bar offset support
 ## Author: Nidhaus
-## Version: 2.2.2
+## Version: 2.2.3
 ## SavedVariablesPerCharacter: NEB_DB
 NEB_ButtonTemplate.xml
 nExtraBars.xml
