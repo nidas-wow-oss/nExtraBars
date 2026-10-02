@@ -2,6 +2,21 @@
 nExtraBars - CHANGELOG TÉCNICO COMPLETO
 ===============================================================================
 
+v2.2.4 (2026-10-01)
+-------------------
+
+NUEVO:
+------
+1. Opción "Raise class bars only if used" en la barra izquierda (/neb),
+   prendida por defecto: las barras de clase (posturas, auras, totems,
+   mascota) suben solo si la barra izquierda tiene al menos un hechizo,
+   objeto o macro en el talento activo. Apagada, suben siempre que la barra
+   esté prendida (como antes).
+2. NEB_ClassBarsShifted(), NEB_CLASSBAR_OFFSET y el aviso
+   NEB_ClassBarShiftChanged(): Nidhaus UnitFrames los usa para subir su
+   propia barra de posturas al mismo tiempo que nExtraBars sube las demás.
+
+
 v2.2.3 (2026-09-29)
 -------------------
 

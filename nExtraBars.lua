@@ -63,7 +63,9 @@ local NUM_CBS      = 2
 local PANEL_PAD_T  = 8
 local PANEL_PAD_B  = 6
 local PANEL_H      = PANEL_PAD_T + (NUM_CBS * CB_SPACING) + PANEL_PAD_B  -- 66
-local OPT_H = 340
+-- La barra izquierda tiene un checkbox mas ("Raise class bars only if used").
+local LEFT_PANEL_H = PANEL_H + CB_SPACING
+local OPT_H = 340 + CB_SPACING
 
 -- ─────────────────────────────────────────────
 -- Utility
@@ -198,6 +200,8 @@ function NEB:InitSavedVars()
     NEB_Config["LeftEnabled"]      = NVL(NEB_Config["LeftEnabled"],      true)
     NEB_Config["LeftLockButtons"]  = NVL(NEB_Config["LeftLockButtons"],  false)
     NEB_Config["LeftNumButtons"]   = NVL(NEB_Config["LeftNumButtons"],   12)
+    -- Subir las barras de clase solo si la barra izquierda tiene algo puesto.
+    NEB_Config["LeftShiftOnlyIfUsed"] = NVL(NEB_Config["LeftShiftOnlyIfUsed"], true)
 
     NEB_Config["RightEnabled"]     = NVL(NEB_Config["RightEnabled"],     false)
     NEB_Config["RightLockButtons"] = NVL(NEB_Config["RightLockButtons"], false)
@@ -242,6 +246,44 @@ end
 -- (qué barras están prendidas, cuántos botones, bloqueo). NEB es local, por
 -- eso hace falta esta puerta global.
 -- ─────────────────────────────────────────────
+-- ─────────────────────────────────────────────
+-- ¿Subir las barras de clase? (posturas, auras, totems, mascota...)
+--
+-- Antes alcanzaba con que la barra izquierda estuviera PRENDIDA. Ahora,
+-- con "Raise class bars only if used" (prendida por defecto), ademas
+-- tiene que tener al menos un hechizo, objeto o macro en el talento
+-- activo: una barra vacia no se ve, y subir las otras dejaba un hueco.
+-- ─────────────────────────────────────────────
+function NEB_LeftBarHasContent()
+    local num = NEB_Config["LeftNumButtons"] or 12
+    local set = (GetActiveTalentGroup and GetActiveTalentGroup()) or 1
+    local st  = NEB_ButtonSettings
+    for i = 1, num do
+        local name = "NEB_BarLeftButton"..i
+        local btn  = _G[name]
+        -- El boton (lo vivo) o lo guardado (por si todavia no se cargo).
+        local t1 = btn and btn["set"..set.."type"]
+        local t2 = type(st) == "table" and st[name.."Set"..set.."Type"]
+        if (t1 and t1 ~= "" and t1 ~= "none") or (t2 and t2 ~= "" and t2 ~= "none") then
+            return true
+        end
+    end
+    return false
+end
+
+function NEB_ClassBarsShifted()
+    if not NEB_Config or not NEB_Config["LeftEnabled"] then return false end
+    if NEB_Config["LeftShiftOnlyIfUsed"] == false then return true end
+    return NEB_LeftBarHasContent()
+end
+
+-- Cuanto se suben. Nidhaus UnitFrames lo lee para su barra de posturas.
+NEB_CLASSBAR_OFFSET = OFFSET_Y
+
+-- Aviso: se llama cada vez que cambia si hay que subir o no. No hace nada;
+-- existe para que otros addons (Nidhaus UnitFrames) se enganchen.
+function NEB_ClassBarShiftChanged(shifted) end
+
 function NEB_ApplyConfig()
     if InCombatLockdown() then return false end
     NEB:RefreshBar("Left")
@@ -425,6 +467,7 @@ local function CTBarModOwnsFrame(frameName)
 end
 
 local isApplying        = false
+local lastShiftNotified = nil
 local basePositions     = {}
 local appliedPositions  = {}
 local applyPending      = false
@@ -503,7 +546,7 @@ local function NEB_Pet_UpdatePositions()
     local petBar = PetActionBarFrame
     if not petBar then return end
 
-    local shift = NEB_Config["LeftEnabled"]
+    local shift = NEB_ClassBarsShifted()
 
     if shift then
         -- Anclar NUESTRO frame arriba de la barra de mascota de Blizzard.
@@ -601,13 +644,19 @@ function NEB:ApplyFrameOffsets()
         return
     end
     isApplying = true
-    local dy = NEB_Config["LeftEnabled"] and OFFSET_Y or 0
+    local shifted = NEB_ClassBarsShifted() and true or false
+    local dy = shifted and OFFSET_Y or 0
     -- Barras simples: offset del contenedor
     for _, fn in ipairs(simpleFrames) do ApplyOffsetToFrame(fn, dy) end
     isApplying = false
     applyPending = false
     -- Pet bar: método reparentado (fuera del guard isApplying para sus hooks)
     NEB_Pet_UpdatePositions()
+    -- Avisar solo si cambio.
+    if shifted ~= lastShiftNotified then
+        lastShiftNotified = shifted
+        pcall(NEB_ClassBarShiftChanged, shifted)
+    end
 end
 
 function NEB:InitFrameMover()
@@ -617,7 +666,7 @@ function NEB:InitFrameMover()
         if f then
             hooksecurefunc(f, "SetPoint", function()
                 if isApplying then return end
-                if not NEB_Config["LeftEnabled"] then return end
+                if not NEB_ClassBarsShifted() then return end
                 if CTBarModOwnsFrame(frameName) then return end
                 if InCombatLockdown() then applyPending = true; return end
                 NEB:ApplyFrameOffsets()
@@ -627,6 +676,15 @@ function NEB:InitFrameMover()
 
     -- Pet bar: inicializar el método reparentado
     NEB_Pet_Init()
+
+    -- Al poner o sacar un hechizo de un boton (o cambiar de talento) puede
+    -- cambiar si la barra izquierda esta vacia: se recalcula.
+    if type(NEB_ABT_SetCommand) == "function" then
+        hooksecurefunc("NEB_ABT_SetCommand", function()
+            if InCombatLockdown() then applyPending = true; return end
+            NEB:ApplyFrameOffsets()
+        end)
+    end
 
     local delayFrame = CreateFrame("Frame")
     delayFrame:Hide(); delayFrame.elapsed = 0
@@ -736,7 +794,7 @@ function NEB:BuildOptionsFrame()
     local leftPanel = CreateFrame("Frame", nil, f)
     leftPanel:SetPoint("TOPLEFT",  f, "TOPLEFT",  PANEL_INDENT,  yOff)
     leftPanel:SetPoint("TOPRIGHT", f, "TOPRIGHT", -PANEL_INDENT, yOff)
-    leftPanel:SetHeight(PANEL_H)
+    leftPanel:SetHeight(LEFT_PANEL_H)
     SetABBackdrop(leftPanel, 16, 10, 3, AB.panelBG, AB.panelBorder)
 
     local lpY = -PANEL_PAD_T
@@ -745,8 +803,18 @@ function NEB:BuildOptionsFrame()
     lpY = lpY - CB_SPACING
     self:MakeCheckbox(leftPanel, "Lock Buttons",     CB_INDENT, lpY, "LeftLockButtons",
         function(v) NEB_Config["LeftLockButtons"] = v; NEB:ApplyLockButtons("Left") end)
+    lpY = lpY - CB_SPACING
+    local onlyCB = self:MakeCheckbox(leftPanel, "Raise class bars only if used", CB_INDENT, lpY, "LeftShiftOnlyIfUsed",
+        function(v) NEB_Config["LeftShiftOnlyIfUsed"] = v; NEB:ApplyFrameOffsets() end)
+    onlyCB:HookScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText("Raise class bars only if used", 1, 1, 1)
+        GameTooltip:AddLine("Stance, aura, totem and pet bars move up above the left bar only when it has at least one spell, item or macro. Turn it off to always move them up.", nil, nil, nil, true)
+        GameTooltip:Show()
+    end)
+    onlyCB:HookScript("OnLeave", function() GameTooltip:Hide() end)
 
-    yOff = yOff - PANEL_H - 16
+    yOff = yOff - LEFT_PANEL_H - 16
 
     -- ── RIGHT BAR ────────────────────────────────────────────────────────────
     MakeLine(f, yOff, AB.accentDim)

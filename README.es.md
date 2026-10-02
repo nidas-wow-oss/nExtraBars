@@ -4,7 +4,7 @@
 
 Addon para **World of Warcraft 3.3.5a (WotLK)** que agrega **dos barras de acción extra** (izquierda y derecha), movibles y configurables, con soporte de offset para la barra de clase.
 
-**Versión:** 2.2.3 · **Autor:** Nidhaus
+**Versión:** 2.2.4 · **Autor:** Nidhaus
 
 ## Qué hace
 
@@ -50,6 +50,11 @@ Si venías de una versión anterior, tus ajustes guardados se mantienen.
 | `/neb left on` · `/neb left off` | Prende o apaga la barra izquierda |
 | `/neb right on` · `/neb right off` | Prende o apaga la barra derecha |
 | `/neb reset` | Recarga la interfaz |
+
+## Novedades de la 2.2.4
+
+- Nueva opción **Raise class bars only if used** (prendida por defecto): las barras de clase solo suben si la barra izquierda tiene algo puesto.
+- Fixes arreglados.
 
 ## Novedades de la 2.2.3
 
